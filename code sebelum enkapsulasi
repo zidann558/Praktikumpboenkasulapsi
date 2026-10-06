@@ -1,0 +1,82 @@
+// NOMOR 3 - ATRIBUT PUBLIC (sebelum enkapsulasi)
+
+public class KodePublic {
+
+    public static class Nasabah {
+        public String idNasabah;
+        public String nama;
+        public String alamat;
+
+        // Constructor 1: semua parameter
+        public Nasabah(String idNasabah, String nama, String alamat) {
+            this.idNasabah = idNasabah;
+            this.nama = nama;
+            this.alamat = alamat;
+        }
+
+        // Constructor 2: tanpa alamat (overloading)
+        public Nasabah(String idNasabah, String nama) {
+            this.idNasabah = idNasabah;
+            this.nama = nama;
+            this.alamat = "-";
+        }
+
+        public void tampilInfo() {
+            System.out.println("ID Nasabah : " + idNasabah);
+            System.out.println("Nama       : " + nama);
+            System.out.println("Alamat     : " + alamat);
+        }
+    }
+
+    public static class Rekening {
+        public String noRekening;
+        public double saldo;
+        public Nasabah pemilik;
+
+        // Constructor 1: dengan saldo awal
+        public Rekening(String noRekening, Nasabah pemilik, double saldo) {
+            this.noRekening = noRekening;
+            this.pemilik = pemilik;
+            this.saldo = saldo;
+        }
+
+        // Constructor 2: saldo awal 0 (overloading)
+        public Rekening(String noRekening, Nasabah pemilik) {
+            this.noRekening = noRekening;
+            this.pemilik = pemilik;
+            this.saldo = 0;
+        }
+
+        public void setor(double jumlah) {
+            saldo += jumlah;
+        }
+
+        public void tarik(double jumlah) {
+            saldo -= jumlah;
+        }
+
+        public void tampilInfo() {
+            System.out.println("No Rekening: " + noRekening);
+            pemilik.tampilInfo();
+            System.out.println("Saldo      : Rp" + saldo);
+        }
+    }
+
+    public static void main(String[] args) {
+            Nasabah n1 = new Nasabah("N001", "Budi", "Surabaya");
+            Nasabah n2 = new Nasabah("N002", "Siti");
+
+            Rekening r1 = new Rekening("1001", n1, 500000);
+            Rekening r2 = new Rekening("1002", n2);
+
+            r1.tampilInfo();
+            System.out.println();
+
+            // Masalah: atribut bisa diubah langsung dari luar class
+            r1.saldo = -999999;     // saldo jadi negatif, tidak ada validasi!
+            r2.pemilik.nama = "";   // nama kosong, juga lolos
+            System.out.println("Setelah diubah langsung (tanpa validasi):");
+            r1.tampilInfo();
+            r2.tampilInfo();
+        }
+}

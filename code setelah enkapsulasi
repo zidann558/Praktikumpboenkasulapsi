@@ -1,0 +1,144 @@
+// NOMOR 4 - ATRIBUT PRIVATE (sesudah enkapsulasi)
+
+public class KodePrivate {
+
+    public static class Nasabah {
+        private String idNasabah;
+        private String nama;
+        private String alamat;
+
+        public Nasabah(String idNasabah, String nama, String alamat) {
+            this.idNasabah = idNasabah;
+            setNama(nama);
+            setAlamat(alamat);
+        }
+
+        public Nasabah(String idNasabah, String nama) {
+            this(idNasabah, nama, "-");
+        }
+
+        // Getter
+        public String getIdNasabah() { return idNasabah; }
+        public String getNama()      { return nama; }
+        public String getAlamat()    { return alamat; }
+
+        // Setter + validasi
+        public void setNama(String nama) {
+            if (nama == null || nama.trim().isEmpty()) {
+                System.out.println("[Ditolak] Nama tidak boleh kosong.");
+            } else {
+                this.nama = nama;
+            }
+        }
+
+        public void setAlamat(String alamat) {
+            if (alamat == null || alamat.trim().isEmpty()) {
+                this.alamat = "-";
+            } else {
+                this.alamat = alamat;
+            }
+        }
+
+        public void tampilInfo() {
+            System.out.println("ID Nasabah : " + idNasabah);
+            System.out.println("Nama       : " + nama);
+            System.out.println("Alamat     : " + alamat);
+        }
+    }
+
+    public static class Rekening {
+        private String noRekening;
+        private double saldo;
+        private Nasabah pemilik;
+
+        public Rekening(String noRekening, Nasabah pemilik, double saldo) {
+            this.noRekening = noRekening;
+            this.pemilik = pemilik;
+            setSaldo(saldo);
+        }
+
+        public Rekening(String noRekening, Nasabah pemilik) {
+            this(noRekening, pemilik, 0);
+        }
+
+        // Getter
+        public String getNoRekening() { return noRekening; }
+        public double getSaldo()      { return saldo; }
+        public Nasabah getPemilik()   { return pemilik; }
+
+        // Setter + validasi
+        public void setSaldo(double saldo) {
+            if (saldo < 0) {
+                System.out.println("[Ditolak] Saldo tidak boleh negatif.");
+            } else {
+                this.saldo = saldo;
+            }
+        }
+
+        public void setPemilik(Nasabah pemilik) {
+            if (pemilik == null) {
+                System.out.println("[Ditolak] Pemilik tidak boleh null.");
+            } else {
+                this.pemilik = pemilik;
+            }
+        }
+
+        // Method untuk memanipulasi data
+        public void setor(double jumlah) {
+            if (jumlah <= 0) {
+                System.out.println("[Ditolak] Jumlah setor harus > 0.");
+            } else {
+                saldo += jumlah;
+                System.out.println("Setor Rp" + jumlah + " berhasil.");
+            }
+        }
+
+        public void tarik(double jumlah) {
+            if (jumlah <= 0) {
+                System.out.println("[Ditolak] Jumlah tarik harus > 0.");
+            } else if (jumlah > saldo) {
+                System.out.println("[Ditolak] Saldo tidak cukup.");
+            } else {
+                saldo -= jumlah;
+                System.out.println("Tarik Rp" + jumlah + " berhasil.");
+            }
+        }
+
+        public void tampilInfo() {
+            System.out.println("No Rekening: " + noRekening);
+            pemilik.tampilInfo();
+            System.out.println("Saldo      : Rp" + saldo);
+        }
+    }
+
+    public static void main(String[] args) {
+            Nasabah n1 = new Nasabah("N001", "Budi", "Surabaya");
+            Nasabah n2 = new Nasabah("N002", "Siti");
+
+            Rekening r1 = new Rekening("1001", n1, 500000);
+            Rekening r2 = new Rekening("1002", n2);
+
+            System.out.println("=== Data Awal ===");
+            r1.tampilInfo();
+            System.out.println();
+            r2.tampilInfo();
+
+            System.out.println("\n=== Akses lewat getter ===");
+            System.out.println("Saldo r1: Rp" + r1.getSaldo());
+            System.out.println("Pemilik r2: " + r2.getPemilik().getNama());
+
+            System.out.println("\n=== Uji setter & validasi ===");
+            r1.setSaldo(-999999);           // ditolak
+            n2.setNama("");                 // ditolak
+            n2.setAlamat("Sidoarjo");       // diterima
+            r1.setor(250000);
+            r1.tarik(100000);
+            r1.tarik(5000000);              // ditolak, saldo tidak cukup
+            r2.setor(-50);                  // ditolak
+
+            System.out.println("\n=== Data Akhir ===");
+            r1.tampilInfo();
+            System.out.println();
+            r2.tampilInfo();
+        }
+}
